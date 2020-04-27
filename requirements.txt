@@ -1,3 +1,4 @@
 tensorflow-text==2.1.1
 tensorflow-hub==0.8.0
 GoogleDriveDownloader
+tqdm==4.43.0
