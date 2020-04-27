@@ -55,7 +55,7 @@ def run_use_experiment(list_1, list_2, result_file, optimize=False, cleaning=Tru
                 lines.append(list_2[idx].strip())
                 print(1-distance)
 
-            if len(lines > 3):
+            if len(lines) > 3:
                 print(lines)
                 with open(result_file, mode='a', encoding='utf-8') as result_file:
                     result_file.write('\n'.join(lines))
