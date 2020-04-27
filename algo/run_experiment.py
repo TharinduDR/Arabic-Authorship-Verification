@@ -31,23 +31,23 @@ def run_use_experiment(list_1, list_2, result_file, batch_size=8, optimize=False
         cleaned_list_1 = [clean_arabic(item) for item in list_1]
         cleaned_list_2 = [clean_arabic(item) for item in list_2]
 
-        for x in batch(cleaned_list_1, batch_size):
-            list_1_embeddings.append(embed(x))
+        for x in tqdm(batch(cleaned_list_1, batch_size)):
+            list_1_embeddings.extend(embed(x))
 
         print("Length of the list 1 embeddings {}".format(str(len(list_1_embeddings))))
 
-        for x in batch(cleaned_list_2, batch_size):
-            list_2_embeddings.append(embed(x))
+        for x in tqdm(batch(cleaned_list_2, batch_size)):
+            list_2_embeddings.extend(embed(x))
 
         print("Length of the list 2 embeddings {}".format(str(len(list_2_embeddings))))
 
     else:
-        for x in batch(list_1, batch_size):
-            list_1_embeddings.append(embed(x))
+        for x in tqdm(batch(list_1, batch_size)):
+            list_1_embeddings.extend(embed(x))
         print("Length of the list 1 embeddings {}".format(str(len(list_1_embeddings))))
 
-        for x in batch(list_2, batch_size):
-            list_2_embeddings.append(embed(x))
+        for x in tqdm(batch(list_2, batch_size)):
+            list_2_embeddings.extend(embed(x))
 
         print("Length of the list 2 embeddings {}".format(str(len(list_2_embeddings))))
 
