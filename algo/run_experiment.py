@@ -8,6 +8,8 @@ import numpy as np
 
 from sklearn.metrics import pairwise_distances
 from tqdm import tqdm
+from numpy import dot
+from numpy.linalg import norm
 
 from preprocess.cleaning import clean_arabic
 from utility.split import batch
@@ -53,28 +55,18 @@ def run_use_experiment(list_1, list_2, result_file, batch_size=8, optimize=False
 
         print("Length of the list 2 embeddings {}".format(str(len(list_2_embeddings))))
 
-    closest_n = 5
     for text, embedding in tqdm(zip(list_1, list_1_embeddings)):
         lines = []
-        all_distances = pairwise_distances([embedding], list_2_embeddings, metric='cosine', n_jobs=-1)
-        distances = np.array([all_distances[0, j] for j in range(len(list_2_embeddings))])
-        results = zip(range(len(distances)), distances)
 
-        # distances = scipy.spatial.distance.cdist([embedding], list_2_embeddings, "cosine")[0]
-        #
-        # print(text)
-        #
-        # results = zip(range(len(distances)), distances)
-        results = sorted(results, key=lambda x: x[1])
+        for duplicate_text, duplicate_embedding in zip(list_2, list_2_embeddings):
+            lines.append("\n\n======================\n\n")
+            lines.append(text)
+            lines.append("*************************")
 
-        lines.append("\n\n======================\n\n")
-        lines.append(text)
-        lines.append("*************************")
-
-        for idx, distance in results[0:closest_n]:
-            if distance < 0.2:
-                lines.append(list_2[idx].strip())
-                print(1-distance)
+            cos_sim = dot(embedding, duplicate_embedding) / (norm(embedding) * norm(duplicate_embedding))
+            if cos_sim > 0.8:
+                lines.append(duplicate_text)
+                print(cos_sim)
 
             if len(lines) > 3:
                 print(lines)
