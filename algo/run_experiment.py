@@ -4,7 +4,9 @@ import tensorflow_text
 import scipy.spatial
 import tensorflow_hub as hub
 import os
+import numpy as np
 
+from sklearn.metrics import pairwise_distances
 from tqdm import tqdm
 
 from preprocess.cleaning import clean_arabic
@@ -54,9 +56,15 @@ def run_use_experiment(list_1, list_2, result_file, batch_size=8, optimize=False
     closest_n = 5
     for text, embedding in tqdm(zip(list_1, list_1_embeddings)):
         lines = []
-        distances = scipy.spatial.distance.cdist([embedding], list_2_embeddings, "cosine")[0]
-
+        all_distances = pairwise_distances([embedding], list_2_embeddings, metric='cosine', n_jobs=-1)
+        distances = np.array([all_distances[0, j] for j in range(len(list_2_embeddings))])
         results = zip(range(len(distances)), distances)
+
+        # distances = scipy.spatial.distance.cdist([embedding], list_2_embeddings, "cosine")[0]
+        #
+        # print(text)
+        #
+        # results = zip(range(len(distances)), distances)
         results = sorted(results, key=lambda x: x[1])
 
         lines.append("\n\n======================\n\n")
