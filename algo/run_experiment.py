@@ -1,7 +1,7 @@
 import logging
 from random import shuffle
 import tensorflow_text
-import scipy
+import scipy.spatial
 import tensorflow_hub as hub
 import os
 
