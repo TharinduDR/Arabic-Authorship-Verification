@@ -46,20 +46,17 @@ def run_use_experiment(list_1, list_2, result_file, optimize=False, cleaning=Tru
         results = zip(range(len(distances)), distances)
         results = sorted(results, key=lambda x: x[1])
 
-        if results[0] < 0.2:
-            logging.info("\n\n======================\n\n")
-            lines.append("\n\n======================\n\n")
-            logging.info(text)
-            lines.append(text)
-            logging.info("*************************")
-            lines.append("*************************")
+        lines.append("\n\n======================\n\n")
+        lines.append(text)
+        lines.append("*************************")
 
-            for idx, distance in results[0:closest_n]:
-                if distance < 0.2:
-                    logging.info(list_2[idx].strip())
-                    lines.append(list_2[idx].strip())
-                    logging.info(1-distance)
+        for idx, distance in results[0:closest_n]:
+            if distance < 0.2:
+                lines.append(list_2[idx].strip())
+                print(1-distance)
 
-            with open(result_file, mode='a', encoding='utf-8') as result_file:
-                result_file.write('\n'.join(lines))
+            if len(lines > 3):
+                print(lines)
+                with open(result_file, mode='a', encoding='utf-8') as result_file:
+                    result_file.write('\n'.join(lines))
 
