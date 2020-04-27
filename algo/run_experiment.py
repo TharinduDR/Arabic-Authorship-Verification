@@ -5,6 +5,8 @@ import scipy.spatial
 import tensorflow_hub as hub
 import os
 
+from tqdm.contrib import tzip
+
 from preprocess.cleaning import clean_arabic
 
 
@@ -39,7 +41,7 @@ def run_use_experiment(list_1, list_2, result_file, optimize=False, cleaning=Tru
         print("Length of the list 2 embeddings {}".format(str(len(list_2_embeddings))))
 
     closest_n = 5
-    for text, embedding in zip(list_1, list_1_embeddings):
+    for text, embedding in tzip(list_1, list_1_embeddings):
         lines = []
         distances = scipy.spatial.distance.cdist([embedding], list_2_embeddings, "cosine")[0]
 
