@@ -2,15 +2,15 @@ import logging
 from random import shuffle
 import tensorflow_text
 import scipy
-from torch import hub
+import tensorflow_hub as hub
 import os
 
 from preprocess.cleaning import clean_arabic
 
 
 def run_use_experiment(list_1, list_2, result_file, optimize=False, cleaning=True, random_seed=777):
-    shuffle(list_1, random_seed)
-    shuffle(list_2, random_seed)
+    shuffle(list_1)
+    shuffle(list_2)
 
     if os.path.isfile(result_file):
         os.remove(result_file)
@@ -22,10 +22,10 @@ def run_use_experiment(list_1, list_2, result_file, optimize=False, cleaning=Tru
         embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder-multilingual-large/3")
 
     if cleaning:
-        cleaned_list_1 = [clean_arabic() for item in list_1]
+        cleaned_list_1 = [clean_arabic(item) for item in list_1]
         list_1_embeddings = embed(cleaned_list_1)
         logging.info("Length of the testing embeddings {}".format(str(len(list_1_embeddings))))
-        cleaned_list_2 = [clean_arabic() for item in list_2]
+        cleaned_list_2 = [clean_arabic(item) for item in list_2]
         list_2_embeddings = embed(cleaned_list_2)
         logging.info("Length of the testing embeddings {}".format(str(len(list_2_embeddings))))
 
