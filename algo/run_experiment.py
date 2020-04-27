@@ -24,16 +24,16 @@ def run_use_experiment(list_1, list_2, result_file, optimize=False, cleaning=Tru
     if cleaning:
         cleaned_list_1 = [clean_arabic(item) for item in list_1]
         list_1_embeddings = embed(cleaned_list_1)
-        logging.info("Length of the testing embeddings {}".format(str(len(list_1_embeddings))))
+        print("Length of the testing embeddings {}".format(str(len(list_1_embeddings))))
         cleaned_list_2 = [clean_arabic(item) for item in list_2]
         list_2_embeddings = embed(cleaned_list_2)
-        logging.info("Length of the testing embeddings {}".format(str(len(list_2_embeddings))))
+        print("Length of the testing embeddings {}".format(str(len(list_2_embeddings))))
 
     else:
         list_1_embeddings = embed(list_1)
-        logging.info("Length of the testing embeddings {}".format(str(len(list_1_embeddings))))
+        print("Length of the testing embeddings {}".format(str(len(list_1_embeddings))))
         list_2_embeddings = embed(list_2)
-        logging.info("Length of the testing embeddings {}".format(str(len(list_2_embeddings))))
+        print("Length of the testing embeddings {}".format(str(len(list_2_embeddings))))
 
     closest_n = 5
     for text, embedding in zip(list_1, list_1_embeddings):
