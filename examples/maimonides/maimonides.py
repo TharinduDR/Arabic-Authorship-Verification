@@ -16,4 +16,4 @@ if book_2_google_drive:
 list_1 = read_book(os.path.join("data",file_1_name))
 list_2 = read_book(os.path.join("data",file_2_name))
 
-run_use_experiment(list_1, list_2, "result.txt", optimize=True)
+run_use_experiment(list_1, list_2, "result.txt", optimize=False)
