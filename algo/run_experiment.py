@@ -15,7 +15,7 @@ from preprocess.cleaning import clean_arabic
 from utility.split import batch
 
 
-def run_use_experiment(list_1, list_2, result_file, batch_size=8, optimize=False, cleaning=True, random_seed=777):
+def run_use_experiment(list_1, list_2, result_file, batch_size=8, threshold=0.8, optimize=False, cleaning=True, random_seed=777):
     shuffle(list_1)
     shuffle(list_2)
 
@@ -57,19 +57,19 @@ def run_use_experiment(list_1, list_2, result_file, batch_size=8, optimize=False
 
     for text, embedding in tqdm(zip(list_1, list_1_embeddings)):
         lines = []
+        lines.append("\n")
+        lines.append("=========================")
+        lines.append(text)
+        lines.append("*************************")
 
         for duplicate_text, duplicate_embedding in zip(list_2, list_2_embeddings):
-            lines.append("\n\n======================\n\n")
-            lines.append(text)
-            lines.append("*************************")
-
             cos_sim = dot(embedding, duplicate_embedding) / (norm(embedding) * norm(duplicate_embedding))
-            if cos_sim > 0.8:
+            if cos_sim > threshold:
                 lines.append(duplicate_text)
                 print(cos_sim)
 
-            if len(lines) > 3:
-                print(lines)
-                with open(result_file, mode='a', encoding='utf-8') as result_file:
-                    result_file.write('\n'.join(lines))
+        if len(lines) > 4:
+            print(lines)
+            with open(result_file, mode='a', encoding='utf-8') as file:
+                file.write('\n'.join(lines))
 
