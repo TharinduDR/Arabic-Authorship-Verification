@@ -62,14 +62,26 @@ def run_use_experiment(list_1, list_2, result_file, batch_size=8, threshold=0.8,
         lines.append(text)
         lines.append("*************************")
 
+        selected_text = []
+        similarity = []
+
         for duplicate_text, duplicate_embedding in zip(list_2, list_2_embeddings):
             cos_sim = dot(embedding, duplicate_embedding) / (norm(embedding) * norm(duplicate_embedding))
             if cos_sim > threshold:
                 lines.append(duplicate_text)
-                print(cos_sim)
+                selected_text.append(duplicate_text)
+                similarity.append(cos_sim)
 
-        if len(lines) > 4:
-            print(lines)
+        if len(selected_text) > 0:
+            results = zip(selected_text, similarity)
+            results = sorted(results, key=lambda x: -x[1])
+
+            for similar_text, similarity in results:
+                lines.append(similar_text)
+                print(similarity)
+
             with open(result_file, mode='a', encoding='utf-8') as file:
                 file.write('\n'.join(lines))
+
+
 
