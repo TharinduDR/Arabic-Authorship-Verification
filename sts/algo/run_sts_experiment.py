@@ -7,6 +7,7 @@ import numpy as np
 from laserembeddings import Laser
 from numpy import dot
 from scipy.stats import pearsonr, spearmanr
+from sentence_transformers import SentenceTransformer
 
 from tqdm import tqdm
 from numpy.linalg import norm
@@ -113,4 +114,47 @@ def run_laser_sts_experiment(cleaning, batch_size=8, random_seed=777):
     print("Pearson Coorelation - {}".format(str(pearsonr(similarities, predicted_similrities)[0])))
 
 
+def run_sbert_sts_experiment(cleaning, batch_size=8, random_seed=777):
 
+    df = concatenate("sts_data")
+
+    list_1 = df['text_a'].tolist()
+    list_2 = df['text_b'].tolist()
+
+    embedder = SentenceTransformer('distiluse-base-multilingual-cased')
+
+    list_1_embeddings = []
+    list_2_embeddings = []
+
+    if cleaning:
+        cleaned_list_1 = [clean_arabic(item) for item in list_1]
+        cleaned_list_2 = [clean_arabic(item) for item in list_2]
+
+        for x in tqdm(batch(cleaned_list_1, batch_size)):
+            list_1_embeddings.extend(embedder.encode(x))
+
+        print("Length of the list 1 embeddings {}".format(str(len(list_1_embeddings))))
+
+        for x in tqdm(batch(cleaned_list_2, batch_size)):
+            list_2_embeddings.extend(embedder.encode(x))
+
+        print("Length of the list 2 embeddings {}".format(str(len(list_2_embeddings))))
+
+    else:
+        for x in tqdm(batch(list_1, batch_size)):
+            list_1_embeddings.extend(embedder.encode(x))
+        print("Length of the list 1 embeddings {}".format(str(len(list_1_embeddings))))
+
+        for x in tqdm(batch(list_2, batch_size)):
+            list_2_embeddings.extend(embedder.encode(x))
+
+        print("Length of the list 2 embeddings {}".format(str(len(list_2_embeddings))))
+
+    predicted_similrities = []
+    similarities = df['labels'].tolist()
+
+    for embedding_1, embedding_2 in tqdm(zip(list_1_embeddings, list_2_embeddings)):
+        cos_sim = np.dot(embedding_1, embedding_2) / (norm(embedding_1) * norm(embedding_2))
+        predicted_similrities.append(cos_sim)
+
+    print("Pearson Coorelation - {}".format(str(pearsonr(similarities, predicted_similrities)[0])))
