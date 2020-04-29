@@ -11,10 +11,15 @@ from numpy import dot
 from numpy.linalg import norm
 
 from preprocess.cleaning import clean_arabic
+from sts.algo.run_sts_experiment import run_use_sts_experiment, run_laser_sts_experiment
 from utility.split import batch
 
 
-def run_use_experiment(list_1, list_2, result_file, batch_size=8, threshold=0.8, optimize=False, cleaning=True, random_seed=777):
+def run_use_experiment(list_1, list_2, result_file, run_sts_experiment=False, batch_size=8, threshold=0.8, optimize=False, cleaning=True, max_no=None, random_seed=777):
+
+    if run_sts_experiment:
+        run_use_sts_experiment(optimize, cleaning)
+
     shuffle(list_1)
     shuffle(list_2)
 
@@ -82,7 +87,11 @@ def run_use_experiment(list_1, list_2, result_file, batch_size=8, threshold=0.8,
                 file.write('\n'.join(lines))
 
 
-def run_laser_experiment(list_1, list_2, result_file, batch_size=8, threshold=0.8, cleaning=True, random_seed=777):
+def run_laser_experiment(list_1, list_2, result_file, run_sts_experiment=False, batch_size=8, threshold=0.8, cleaning=True, max_no=None, random_seed=777):
+
+    if run_sts_experiment:
+        run_laser_sts_experiment(cleaning)
+
     shuffle(list_1)
     shuffle(list_2)
 
@@ -138,9 +147,15 @@ def run_laser_experiment(list_1, list_2, result_file, batch_size=8, threshold=0.
             results = zip(selected_text, similarity)
             results = sorted(results, key=lambda x: -x[1])
 
-            for similar_text, similarity in results:
-                lines.append(similar_text)
-                print(similarity)
+            if max_no is not None and len(selected_text) > max_no:
+                for similar_text, similarity in results[0:max_no]:
+                    lines.append(similar_text)
+                    print(similarity)
+
+            else:
+                for similar_text, similarity in results:
+                    lines.append(similar_text)
+                    print(similarity)
 
             with open(result_file, mode='a', encoding='utf-8') as file:
                 file.write('\n'.join(lines))

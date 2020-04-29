@@ -16,5 +16,5 @@ if book_2_google_drive:
 list_1 = read_book(os.path.join("data",file_1_name))
 list_2 = read_book(os.path.join("data",file_2_name))
 
-#run_use_experiment(list_1, list_2, "result_0.8.txt", threshold=0.8, optimize=False)
-run_laser_experiment(list_1, list_2, "laser_result_0.7.txt", threshold=0.8)
+#run_use_experiment(list_1, list_2, "result_0.8.txt", run_sts_experiment=True, threshold=0.8, optimize=False)
+run_laser_experiment(list_1, list_2, "laser_result_0.80.txt", run_sts_experiment=True, threshold=0.80, max_no=5)
